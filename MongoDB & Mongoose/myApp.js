@@ -1,59 +1,141 @@
+/** # MONGOOSE SETUP #
+/*  ================== */
+
+/** 1) Install & Set up mongoose */
+const mongoose = require('mongoose');
+mongoose.connect(process.env.MONGO_URL);
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+
 require('dotenv').config();
 
+/** 2) Create a Model */
+const { Schema } = mongoose;
+const personSchema = new Schema({
+  name: {
+    type: String, 
+    required: true
+  },
+  age: Number,
+  favoriteFoods: [String]
+});
 
-let Person;
+const Person = mongoose.model("Person", personSchema);
 
+/** 3) Create and Save a Record of a Model */
 const createAndSavePerson = (done) => {
-  done(null /*, data*/);
+  const newPerson = new Person({
+    name: 'Person',
+    age: 19,
+    favoriteFoods: [ 'chicken', 'yogurt', 'salad' ]
+  });
+  
+  newPerson.save((err, data) => {
+    if (err) return console.error(err);
+    done(null, data);
+  });
 };
+
+/** 4) Create Many Records with model.create() */
+const arrayOfPeople = [
+  {name: "Anna", age: 19, favoriteFoods: ["pasta", "yogurt"]},
+  {name: "Jack", age: 22, favoriteFoods: ["chicken", "apples"]},
+  {name: "Mary", age: 21, favoriteFoods: ["steak"]},
+  {name: "John", age: 23, favoriteFoods: ["pizza"]},
+  {name: "Mary", age: 18, favoriteFoods: ["fish", "tacos"]}
+];
 
 const createManyPeople = (arrayOfPeople, done) => {
-  done(null /*, data*/);
+  Person.create(arrayOfPeople, (err, people) => {
+  if (err) return console.error(err);
+  done(null, people);
+  });
 };
 
+/** 5) Use model.find() to Search Your Database */
 const findPeopleByName = (personName, done) => {
-  done(null /*, data*/);
+  Person.find({ 
+    name: personName 
+  }, (err, personFound) => {
+    if (err) return console.log(err);
+    done(null, personFound);
+    });
 };
 
+/** 6) Use model.findOne() to Return a Single Matching Document from Your Database */
 const findOneByFood = (food, done) => {
-  done(null /*, data*/);
+  Person.findOne({ 
+    favoriteFoods: food 
+  }, (err, data) => {
+    if (err) return console.log(err);
+    done(null, data);
+    });
 };
 
+/** 7) Use model.findById() to Search Your Database By _id */
 const findPersonById = (personId, done) => {
-  done(null /*, data*/);
+  Person.findById(personId, (err, data) => {
+    if (err) return console.log(err);
+    done(null, data);
+    });
 };
 
+/** 8) Perform Classic Updates by Running Find, Edit, then Save */
 const findEditThenSave = (personId, done) => {
   const foodToAdd = "hamburger";
-
-  done(null /*, data*/);
+  Person.findById(personId, (err, person) => {
+    if (err) return console.log(err);
+    person.favoriteFoods.push(foodToAdd);
+    person.save((err, updatedPerson) => {
+    if (err) return console.log(err);
+    done(null, updatedPerson);
+    })
+  })
 };
 
+/** 9) Perform New Updates on a Document Using model.findOneAndUpdate() */
 const findAndUpdate = (personName, done) => {
   const ageToSet = 20;
 
-  done(null /*, data*/);
+  Person.findOneAndUpdate(
+    {name: personName}, 
+    {age: ageToSet},
+    {new: true},
+    (err, updatedPerson) => {
+      if (err) return console.log(err);
+      done(null, updatedPerson);
+    })
 };
 
+/** 10) Delete One Document Using model.findByIdAndRemove */
 const removeById = (personId, done) => {
-  done(null /*, data*/);
+  Person.findByIdAndRemove(personId, (err, removedDoc) => {
+    if(err) return console.log(err);
+    done(null, removedDoc);
+  });
 };
 
+/** 11) Delete Many Documents with model.remove() */
 const removeManyPeople = (done) => {
   const nameToRemove = "Mary";
-
-  done(null /*, data*/);
+  Person.remove({name: nameToRemove}, (err, removedPeople) => {
+    if(err) return console.log(err);
+    done(null, removedPeople);
+  })
 };
 
+/** 12) Chain Search Query Helpers to Narrow Search Results */
 const queryChain = (done) => {
   const foodToSearch = "burrito";
-
-  done(null /*, data*/);
+  Person.find({favoriteFoods: foodToSearch})
+    .sort({ name: 'asc' })
+    .limit(2)
+    .select({ age: 0 })
+    //callback
+    .exec((err, docs) => {
+      done(null, docs);
+    });
 };
-
-/** **Well Done !!**
-/* You completed these challenges, let's go celebrate !
- */
 
 //----- **DO NOT EDIT BELOW THIS LINE** ----------------------------------
 

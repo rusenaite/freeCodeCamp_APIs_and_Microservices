@@ -12,6 +12,7 @@ body {
 .container {
 	padding: 0;
 	margin-top: 40px;
+  	padding: 0px 300px 0px 300px;
 }
 
 h3 {

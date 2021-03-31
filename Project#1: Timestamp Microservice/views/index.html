@@ -9,8 +9,28 @@
    </head>
 
    <body>
-    <h1>Timestamp Microservice</h1>
-    <hr />
+     <h3>APIs and Microservices Course</h3>
+     <h2>Project: Timestamp Microservice</h2>
+   <hr/>
+     
+     <div class="container">
+       <h3>Fuctionality/completed tasks:</h3>
+      <ul>
+        <li>1. A request to <i>/api/timestamp/:date?</i> with a valid date returns a 
+            JSON object with a UNIX key that is a UNIX timestamp of the input 
+            date in milliseconds.</li>
+        <li>2. A request to <i>/api/timestamp/:date?</i> with a valid date returns a 
+            JSON object with a UTC key that is a string of the input date in 
+          the format: <i>Thu, 01 Jan 1970 00:00:00 GMT</i>.</li>
+        <li>3. Project handles dates that can be successfully parsed by new 
+            Date(date_string).</li>
+        <li>4. If the input date string is invalid, the API returns an object 
+          <i>{ error : "Invalid Date" }</i>.</li>
+        <li>5. An empty date parameter returns the current time in a JSON 
+            object with a UNIX and UTC keys.</li>
+      </ul>
+    </div>
+     
     <div class="container">
       <h3>Example Usage:</h3>
       <ul>

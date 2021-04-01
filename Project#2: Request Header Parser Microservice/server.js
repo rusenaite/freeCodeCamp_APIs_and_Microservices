@@ -1,5 +1,4 @@
 // server.js
-// where your node app starts
 
 // init project
 require('dotenv').config();
@@ -26,8 +25,21 @@ app.get("/api/hello", function (req, res) {
 });
 
 
-
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
   console.log('Your app is listening on port ' + listener.address().port);
+});
+
+
+let resObj = {};
+//to show IP adress/enable property
+app.enable('trust proxy'); 
+
+app.get('/api/whoami', (req, res) => {
+  resObj['ipaddress'] = req.ip;
+  //get method to extract stored language from the header field
+  resObj['language'] = req.get('Accept-Language');
+  //get method to extract stored software information from the header field
+  resObj['software'] = req.get('User-Agent');
+  res.json(resObj);
 });
